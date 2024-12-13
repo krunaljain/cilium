@@ -448,14 +448,13 @@ static __always_inline int handle_ipv6_from_lxc(struct __ctx_buff *ctx, __u32 *d
 	};
 	__u32 __maybe_unused tunnel_endpoint = 0;
 	__u8 __maybe_unused encrypt_key = 0;
-	bool __maybe_unused skip_tunnel = false;
+	bool __maybe_unused skip_tunnel = extract_cluster_id_from_identity(*dst_sec_identity) == 1;
 	enum ct_status ct_status;
 	__u8 policy_match_type = POLICY_MATCH_NONE;
 	__u8 audited = 0;
 	__u8 auth_type = 0;
 	__u16 proxy_port = 0;
 	bool from_l7lb = false;
-
 	if (!revalidate_data(ctx, &data, &data_end, &ip6))
 		return DROP_INVALID;
 
@@ -472,7 +471,7 @@ static __always_inline int handle_ipv6_from_lxc(struct __ctx_buff *ctx, __u32 *d
 			*dst_sec_identity = info->sec_identity;
 			tunnel_endpoint = info->tunnel_endpoint;
 			encrypt_key = get_min_encrypt_key(info->key);
-			skip_tunnel = info->flag_skip_tunnel;
+			skip_tunnel |= info->flag_skip_tunnel;
 		} else {
 			*dst_sec_identity = WORLD_IPV6_ID;
 		}
