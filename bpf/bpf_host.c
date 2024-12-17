@@ -700,6 +700,7 @@ handle_ipv4_cont(struct __ctx_buff *ctx, __u32 secctx, const bool from_host,
 	__u8 encrypt_key __maybe_unused = 0;
 	__u32 magic = MARK_MAGIC_IDENTITY;
 	bool from_proxy = false;
+	bool skip_tunnel_flag = false;
 
 	if (from_host && tc_index_from_ingress_proxy(ctx)) {
 		from_proxy = true;
@@ -833,6 +834,7 @@ skip_vtep:
 #endif
 
 	info = lookup_ip4_remote_endpoint(ip4->daddr, 0);
+	skip_tunnel_flag = extract_cluster_id_from_identity(info->sec_identity) == 1;
 
 #ifdef ENABLE_IPSEC
 	/* We encrypt host to remote pod packets only if they are from proxy. */
@@ -841,7 +843,6 @@ skip_vtep:
 #endif
 
 #ifdef TUNNEL_MODE
-	bool skip_tunnel_flag = extract_cluster_id_from_identity(info->sec_identity) == 1;
 	if ((info && info->flag_skip_tunnel) || skip_tunnel_flag)
 		goto skip_tunnel;
 
