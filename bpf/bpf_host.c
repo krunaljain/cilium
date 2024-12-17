@@ -841,7 +841,8 @@ skip_vtep:
 #endif
 
 #ifdef TUNNEL_MODE
-	if (info && info->flag_skip_tunnel)
+	bool skip_tunnel_flag = extract_cluster_id_from_identity(info->sec_identity) == 1;
+	if ((info && info->flag_skip_tunnel) || skip_tunnel_flag)
 		goto skip_tunnel;
 
 	if (info && info->tunnel_endpoint != 0) {
