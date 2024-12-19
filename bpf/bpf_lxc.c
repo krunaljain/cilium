@@ -920,6 +920,10 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx, __u32 *d
 		if (info && info->sec_identity) {
 			*dst_sec_identity = info->sec_identity;
 			tunnel_endpoint = info->tunnel_endpoint;
+			if (extract_cluster_id_from_identity(*dst_sec_identity) == 1) {
+				skip_tunnel=true;
+				printk("skipping tunneling dest identity is %u with tunnel endpoint %u", *dst_sec_identity, tunnel_endpoint);			
+			}
 			encrypt_key = get_min_encrypt_key(info->key);
 			skip_tunnel |= info->flag_skip_tunnel;
 		} else {
@@ -1259,7 +1263,10 @@ skip_vtep:
 				tunnel_endpoint = ip4->daddr;
 		}
 #endif
+		if (extract_cluster_id_from_identity(*dst_sec_identity) == 1) {
+						printk("Encaping cluster aware addressing for identity ");
 
+		}
 		ret = encap_and_redirect_lxc(ctx, tunnel_endpoint, ip4->saddr,
 					     ip4->daddr, encrypt_key, &key,
 					     SECLABEL_IPV4, *dst_sec_identity, &trace);
