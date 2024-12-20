@@ -709,22 +709,6 @@ func TestCheckIPAMDelegatedPlugin(t *testing.T) {
 			expectErr: fmt.Errorf("--enable-endpoint-health-checking must be disabled with --ipam=delegated-plugin"),
 		},
 		{
-			name: "IPAMDelegatedPlugin without local router IPv4",
-			d: &DaemonConfig{
-				IPAM:       ipamOption.IPAMDelegatedPlugin,
-				EnableIPv4: true,
-			},
-			expectErr: fmt.Errorf("--local-router-ipv4 must be provided when IPv4 is enabled with --ipam=delegated-plugin"),
-		},
-		{
-			name: "IPAMDelegatedPlugin without local router IPv6",
-			d: &DaemonConfig{
-				IPAM:       ipamOption.IPAMDelegatedPlugin,
-				EnableIPv6: true,
-			},
-			expectErr: fmt.Errorf("--local-router-ipv6 must be provided when IPv6 is enabled with --ipam=delegated-plugin"),
-		},
-		{
 			name: "IPAMDelegatedPlugin with envoy config enabled",
 			d: &DaemonConfig{
 				IPAM:              ipamOption.IPAMDelegatedPlugin,
