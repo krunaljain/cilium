@@ -1054,7 +1054,9 @@ func (n *linuxNodeHandler) nodeUpdate(oldNode, newNode *nodeTypes.Node, firstAdd
 		return errs
 	}
 
-	if n.enableEncapsulation(newNode) {
+	// Tunneling is virtually "disabled" for the hybrid mode. Trying this out locally for a POC
+	n.log.Debug("Virtually disabling tunneling for hybrid POC")
+	if false {
 		// An uninitialized PrefixCluster has empty netip.Prefix and 0 ClusterID.
 		// We use this empty PrefixCluster instead of nil here.
 		var (
